@@ -1,6 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const prisma = require("@/prisma/client.ts");
 
 async function main() {
   const issue = await prisma.issue.create({

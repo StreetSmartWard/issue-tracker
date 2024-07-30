@@ -6,18 +6,36 @@ const createIssueSchema = z.object({
   title: z.string().min(1).max(255),
   description: z.string().min(1),
 });
-
+export async function GET() {
+  try {
+    const issues = await prisma.issue.findMany();
+    return NextResponse.json(issues, { status: 200 });
+  } catch (error) {
+    // Handle any errors that occur during the fetch
+    return NextResponse.json(
+      { error: "Failed to fetch issues" },
+      { status: 500 }
+    );
+  }
+}
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const validation = createIssueSchema.safeParse(body);
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
-  const newIssue = prisma.issue.create({
-    data: {
-      title: body.title,
-      description: body.description,
-    },
-  });
-  return NextResponse.json(newIssue, { status: 201 });
+  try {
+    const newIssue = prisma.issue.create({
+      data: {
+        title: body.title,
+        description: body.description,
+      },
+    });
+    return NextResponse.json(newIssue, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to create issue" },
+      { status: 500 }
+    );
+  }
 }
