@@ -1,4 +1,6 @@
-const prisma = require("@/prisma/client.ts");
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 async function main() {
   const issue = await prisma.issue.create({
